@@ -1,9 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+    这里需要明确一点，returnSize是三元组的数量，*returnColumnSizes是针对每一个三元组、记录每个三元组包含元素个数的数组；
+    例如针对第一个三元组，元素个数是：(*returnColumnSizes)[0]; 用二级指针的原因是，这个数组的维度可能需要修改（即三元组的数量是不固定的）
+**/
+
 int cmp_int(const void *a, const void *b);
 int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes);
-// ��������޸�һά����ĳ��Ⱥ�Ԫ��ֵ
+// 测试如何修改一维数组的长度和元素值
 void changeArr(int** array, int *aSize);
 
 int main()
@@ -20,7 +25,7 @@ int main()
     }
     return 0;
 }
-// ��������޸�һά����
+// 测试如何修改一维数组
 void changeArr(int** array, int *aSize) {
     *array = malloc(sizeof(int) * 10);
     for(int i = 0; i < 10; i++) {
@@ -38,17 +43,17 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 {
     int **res = malloc(sizeof(int*) * numsSize * numsSize);
     *returnColumnSizes = malloc(sizeof(int) * numsSize * numsSize);
-    *returnSize = 0;        // ����
+    *returnSize = 0;        // 行数
 
     qsort(nums, numsSize, sizeof(int), cmp_int);
     for (int first = 0; first < numsSize - 2; first ++) {
-        if (first != 0 && nums[first] == nums[first-1])     // firstȥ��
+        if (first != 0 && nums[first] == nums[first-1])     // first去重
             continue;
-        // ���²���˫ָ��
-        int second = first + 1;     // second = first��һλ
-        int third = numsSize - 1;   // third = ĩβһλ
+        // 以下采用双指针
+        int second = first + 1;     // second = first后一位
+        int third = numsSize - 1;   // third = 末尾一位
         while(second < third) {
-            if (second != first+1 && nums[second]==nums[second-1]) {     // second ȥ��
+            if (second != first+1 && nums[second]==nums[second-1]) {     // second 去重
                 second++;
                 continue;
             }
@@ -58,9 +63,9 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
                 res[*returnSize][0] = nums[first];
                 res[*returnSize][1] = nums[second];
                 res[*returnSize][2] = nums[third];
-                (*returnColumnSizes)[*returnSize] = 3;  // ÿһ����Ԫ���е�����
-                (*returnSize)++;        // ��Ԫ������
-                second ++;              // ̽Ѱ��һ��second
+                (*returnColumnSizes)[*returnSize] = 3;  // 每一个三元组中的数量
+                (*returnSize)++;        // 三元组数量
+                second ++;              // 探寻下一个second
             }
             else if (sum < 0) second++;
             else if (sum > 0) third --;
