@@ -1,2 +1,2 @@
 # myleetcode_C
-C语言刷leetcode
+C/C++语言刷leetcode
